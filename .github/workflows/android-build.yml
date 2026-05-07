@@ -1,0 +1,32 @@
+name: Generar APK Reproductor
+on:
+  push:
+    branches: [ principal ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Cordova
+        run: npm install -g cordova
+
+      - name: Preparar Android
+        run: cordova platform add android
+
+      - name: Compilar APK
+        run: cordova build android
+
+      - name: Buscar y Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: musica-instalador
+          path: "**/build/outputs/apk/debug/*.apk"
